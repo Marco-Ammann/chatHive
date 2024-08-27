@@ -1,0 +1,140 @@
+{
+   "users": {
+      "user_123": {
+         "id": "user_123",
+         "username": "marco_ammann",
+         "email": "marco@example.com",
+         "avatarUrl": "https://example.com/marco_avatar.png",
+         "status": "online",
+         "channels": ["channel_001", "channel_002"],
+         "directMessageIds": ["dm_001", "dm_002"]
+      },
+      "user_456": {
+         "id": "user_456",
+         "username": "john_doe",
+         "email": "john.doe@example.com",
+         "avatarUrl": "https://example.com/john_avatar.png",
+         "status": "offline",
+         "channels": ["channel_001"],
+         "directMessageIds": ["dm_001"]
+      }
+   },
+
+
+   "channels": {
+      "channel_001": {
+         "id": "channel_001",
+         "name": "General",
+         "createdAt": "2023-08-27T12:00:00Z",
+         "members": ["user_123", "user_456"],
+         "messages": ["message_001", "message_002"],
+         "threads": ["thread_001"]
+      },
+      "channel_002": {
+         "id": "channel_002",
+         "name": "Project Alpha",
+         "createdAt": "2023-08-27T12:30:00Z",
+         "members": ["user_123"],
+         "messages": ["message_003"],
+         "threads": []
+      }
+   },
+
+
+   "messages": {
+      "message_001": {
+         "id": "message_001",
+         "content": "Hello everyone!",
+         "createdAt": "2023-08-27T12:10:00Z",
+         "userId": "user_123",
+         "channelId": "channel_001",
+         "threadId": null,
+         "reactions": {
+            "like": ["user_456"],
+            "laugh": []
+         }
+      },
+      "message_002": {
+         "id": "message_002",
+         "content": "How are you all doing?",
+         "createdAt": "2023-08-27T12:15:00Z",
+         "userId": "user_456",
+         "channelId": "channel_001",
+         "threadId": "thread_001",
+         "reactions": {}
+      },
+      "message_003": {
+         "id": "message_003",
+         "content": "Project update: we are 80% done!",
+         "createdAt": "2023-08-27T12:35:00Z",
+         "userId": "user_123",
+         "channelId": "channel_002",
+         "threadId": null,
+         "reactions": {
+            "like": []
+         }
+      }
+   },
+
+
+   "threads": {
+      "thread_001": {
+         "id": "thread_001",
+         "parentMessageId": "message_002",
+         "replies": ["message_004"],
+         "createdBy": "user_123",
+         "createdAt": "2023-08-27T12:20:00Z"
+      }
+   },
+
+
+   "threadMessages": {
+      "message_004": {
+         "id": "message_004",
+         "content": "I'm good! How about you?",
+         "createdAt": "2023-08-27T12:25:00Z",
+         "userId": "user_123",
+         "channelId": "channel_001",
+         "threadId": "thread_001",
+         "reactions": {
+            "like": []
+         }
+      }
+   },
+
+
+   "directMessages": {
+      "dm_001": {
+         "id": "dm_001",
+         "participants": ["user_123", "user_456"],
+         "messages": ["message_005", "message_006"],
+         "lastUpdated": "2023-08-27T12:30:00Z"
+      },
+      "dm_002": {
+         "id": "dm_002",
+         "participants": ["user_123", "user_789"],
+         "messages": [],
+         "lastUpdated": null
+      }
+   },
+
+   
+   "directMessagesMessages": {
+      "message_005": {
+         "id": "message_005",
+         "content": "Hey, how are you?",
+         "createdAt": "2023-08-27T12:20:00Z",
+         "userId": "user_123",
+         "dmId": "dm_001",
+         "reactions": {}
+      },
+      "message_006": {
+         "id": "message_006",
+         "content": "I'm doing well, thanks!",
+         "createdAt": "2023-08-27T12:25:00Z",
+         "userId": "user_456",
+         "dmId": "dm_001",
+         "reactions": {}
+      }
+   }
+}
