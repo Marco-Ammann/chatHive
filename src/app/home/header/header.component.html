@@ -1,0 +1,10 @@
+<mat-toolbar class="header">
+  <span class="spacer"></span>
+  <div class="user-info">
+    <span class="username">{{ currentUser?.username }}</span>
+    <span class="status" [ngClass]="currentUser?.status">{{ currentUser?.status }}</span>
+  </div>
+  <img class="avatar" [src]="currentUser?.avatarUrl" alt="{{ currentUser?.username }}">
+</mat-toolbar>
+
+

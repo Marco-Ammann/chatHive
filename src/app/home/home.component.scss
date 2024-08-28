@@ -1,36 +1,108 @@
-.layout-wrapper {
-  position: relative;
-  height: calc(100vh - 128px); // Adjust based on toolbar and search bar height
-  overflow: hidden;
-}
+.home-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  transition: all 0.3s ease;
 
-.sidenav-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.3s ease-in-out;
-}
+  .content {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
 
-.chat-wrapper {
-  position: absolute;
-  top: 0;
-  left: 100%; // Initially hidden off-screen
-  width: 100%;
-  height: 100%;
-  background-color: #f0f0f0;
-  transform: translateX(0); // Shown on screen when toggled
-  transition: transform 0.3s ease-in-out;
-}
+    /* Mobile (Default) */
+    .sidenav, .chat-main, .thread-panel {
+      flex: 1 0 auto;
+      display: none;
+    }
 
-.thread-wrapper {
-  position: absolute;
-  top: 0;
-  left: 100%;
-  width: 100%;
-  height: 100%;
-  background-color: #e0e0e0;
-  transform: translateX(0); // Shown on screen when toggled
-  transition: transform 0.3s ease-in-out;
+    .sidenav {
+      display: block;
+    }
+
+    .footer {
+      display: block;
+    }
+  }
+
+  /* Tablet layout */
+  &.tablet .content {
+    flex-direction: row;
+
+    .sidenav {
+      flex: 0 0 250px;
+      display: block;
+    }
+
+    .chat-main {
+      flex: 1;
+      display: block;
+    }
+
+    .thread-panel {
+      flex: 0 0 350px;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      display: none; /* Initially hidden */
+    }
+
+    .thread-panel.open {
+      display: block;
+      transform: translateX(0); /* Slide-in effect when open */
+    }
+  }
+
+  /* Desktop layout */
+  &.desktop .content {
+    flex-direction: row;
+
+    .sidenav {
+      flex: 0 0 250px;
+      display: block;
+    }
+
+    .chat-main {
+      flex: 1;
+      display: block;
+    }
+
+    .thread-panel {
+      flex: 0 0 350px;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      display: none; /* Initially hidden */
+    }
+
+    .thread-panel.open {
+      display: block;
+      transform: translateX(0); /* Slide-in effect when open */
+    }
+  }
+
+  /* Mobile adjustments */
+  &.mobile .content {
+    flex-direction: column;
+
+    .sidenav {
+      display: block;
+    }
+
+    .chat-main {
+      display: block;
+    }
+
+    .thread-panel {
+      display: none;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .thread-panel.open {
+      display: block;
+      transform: translateX(0); /* In mobile, it should replace the chat view */
+    }
+
+    .footer {
+      display: block;
+    }
+  }
 }

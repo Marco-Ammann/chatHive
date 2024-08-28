@@ -1,68 +1,9 @@
-/* Mobile-first styles */
-body, html {
+@import 'assets/fonts/raleway/raleway.scss';
+
+* {
   margin: 0;
   padding: 0;
-  height: 100%;
-  font-family: 'Roboto', sans-serif;
-}
+  box-sizing: border-box;
 
-/* General layout for mobile */
-.sidenav-container {
-  height: 100vh;
-}
-
-.content-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 128px); /* Adjust for toolbar and footer */
-}
-
-/* Ensure mobile footer is always visible */
-mat-toolbar.mobile-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 56px; /* Typical height for toolbar on mobile */
-  display: flex;
-  justify-content: space-around;
-  z-index: 10; /* Ensure it is on top */
-}
-
-/* Search bar adjustment */
-.search-bar-container {
-  padding: 8px;
-  background-color: white;
-}
-
-/* Chat main and thread areas for mobile */
-.chat-main {
-  flex: 1;
-  padding: 8px;
-  background-color: #f0f0f0;
-}
-
-.thread-container {
-  display: none;
-}
-
-/* Desktop specific styles using media queries */
-@media (min-width: 768px) {
-  .sidenav-container {
-    height: calc(100vh - 64px); /* Adjust for the toolbar height */
-  }
-
-  .mobile-footer {
-    display: none; /* Hide mobile footer on larger screens */
-  }
-
-  .chat-main {
-    padding: 16px;
-  }
-
-  .thread-container {
-    display: block;
-    width: 320px;
-    background-color: #e0e0e0;
-  }
+  font: 400 16px 'Raleway', sans-serif;
 }

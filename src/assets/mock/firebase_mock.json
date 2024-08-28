@@ -2,18 +2,18 @@
    "users": {
       "user_123": {
          "id": "user_123",
-         "username": "marco_ammann",
+         "username": "Marco Ammann",
          "email": "marco@example.com",
-         "avatarUrl": "https://example.com/marco_avatar.png",
+         "avatarUrl": "assets/avatars/avatar1.svg",
          "status": "online",
          "channels": ["channel_001", "channel_002"],
          "directMessageIds": ["dm_001", "dm_002"]
       },
       "user_456": {
          "id": "user_456",
-         "username": "john_doe",
+         "username": "John Doe",
          "email": "john.doe@example.com",
-         "avatarUrl": "https://example.com/john_avatar.png",
+         "avatarUrl": "assets/avatars/avatar2.svg",
          "status": "offline",
          "channels": ["channel_001"],
          "directMessageIds": ["dm_001"]
@@ -118,7 +118,7 @@
       }
    },
 
-   
+
    "directMessagesMessages": {
       "message_005": {
          "id": "message_005",

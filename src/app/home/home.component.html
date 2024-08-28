@@ -1,0 +1,22 @@
+<div class="home-container" [class.mobile]="currentDevice === 'mobile'" [class.tablet]="currentDevice === 'tablet'" [class.desktop]="currentDevice === 'desktop'">
+  <app-header class="header"></app-header>
+
+  <div class="content">
+    <app-sidenav class="sidenav" [hidden]="currentDevice === 'mobile' && currentView !== 'sidenav'"></app-sidenav>
+
+    <app-chat-main
+      class="chat-main"
+      [hidden]="currentDevice === 'mobile' && currentView !== 'chat'"
+      (messageClicked)="openThreadPanel()"></app-chat-main>
+
+    <app-thread-panel
+      class="thread-panel"
+      [class.open]="isThreadPanelOpen"
+      [hidden]="currentDevice === 'mobile' && currentView !== 'thread'"></app-thread-panel>
+  </div>
+
+  <button (click)="openThreadPanel()">Open Thread</button>
+  <button (click)="closeThreadPanel()">Close Thread</button>
+
+  <app-footer class="footer" *ngIf="currentDevice === 'mobile'"></app-footer>
+</div>
