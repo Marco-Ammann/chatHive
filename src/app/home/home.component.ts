@@ -76,10 +76,12 @@ export class HomeComponent {
 
     // Use LayoutService to open the thread panel
     this.layoutService.toggleThreadPanel(true);
+    console.log('Thread panel opened');
   }
 
   closeThreadPanel() {
     // Use LayoutService to close the thread panel
     this.layoutService.toggleThreadPanel(false);
+    console.log('Thread panel closed');
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collectionData, collection, addDoc, doc, updateDoc, query, where, orderBy } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Message } from '../models/message.model';
 import { Thread } from '../models/thread.model';
 
@@ -8,6 +8,8 @@ import { Thread } from '../models/thread.model';
   providedIn: 'root',
 })
 export class MessageService {
+  private messagesSubject = new BehaviorSubject<Message[] | null>(null);
+  messages$: Observable<Message[] | null> = this.messagesSubject.asObservable();
   constructor(private firestore: Firestore) {}
 
   // Get messages for a specific channel
@@ -17,7 +19,13 @@ export class MessageService {
   }
 
   // Send a new message in a channel
-  sendMessage(channelId: string, message: Message) {
+  addMessage(channelId: string, message: Message) {
+    console.log('Channel ID:', channelId);
+    if (!channelId) {
+      console.error('Channel ID is undefined!');
+      return;
+    }
+
     const messageCollection = collection(this.firestore, `channels/${channelId}/messages`);
     return addDoc(messageCollection, message);
   }

@@ -18,4 +18,8 @@ export class MockFirebaseService {
   getCurrentUser(data: any): any {
     return data.users['user_123'];
   }
+
+  getMessages(data: any): any {
+    return data.messages;
+  }
 }
