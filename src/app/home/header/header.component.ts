@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MockFirebaseService } from '../../shared/services/mock-firebase.service';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { AuthService } from '../../shared/services/auth.service';
+import { User } from '../../shared/models/user.model';
 
 @Component({
   selector: 'app-header',
@@ -14,12 +15,26 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class HeaderComponent implements OnInit {
   currentUser: any;
-
-  constructor(private mockFirebaseService: MockFirebaseService) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    this.mockFirebaseService.getMockData().subscribe((data) => {
-      this.currentUser = this.mockFirebaseService.getCurrentUser(data);
+    this.getCurrentUser();
+  }
+
+  getCurrentUser() {
+    this.authService.getCurrentUser().subscribe(user => {
+      if (user) {
+        this.currentUser = {
+          id: user.uid,
+          username: user.displayName ?? '',
+          email: user.email ?? '',
+          avatarUrl: user.photoURL ?? '',
+          status: 'online', // You can set the status dynamically
+        };
+      } else {
+        this.currentUser = null;
+      }
+      console.log('Current user:', this.currentUser);
     });
   }
 }

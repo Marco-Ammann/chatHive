@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, UserCredential } from '@angular/fire/auth';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
-import { from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { User } from '../models/user.model'; // Adjust the path as necessary
+import { authState } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -45,5 +46,9 @@ export class AuthService {
   logout() {
     console.log('Logging out...');
     return from(signOut(this.auth));
+  }
+
+  getCurrentUser(): Observable<any> {
+    return authState(this.auth);
   }
 }

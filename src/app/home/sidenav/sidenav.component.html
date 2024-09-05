@@ -1,1 +1,39 @@
-side-nav works!
+<div class="wrapper">
+  <div class="channelList">
+    <form [formGroup]="channelListForm">
+      <mat-selection-list
+        #channelList
+        [formControl]="channelListControl"
+        name="channels"
+        [multiple]="false"
+      >
+        @for (channel of channels$ | async; track channel.id) {
+        <mat-list-option [value]="channel.id">{{ channel.name }}</mat-list-option>
+        }
+      </mat-selection-list>
+      <p>
+        Option selected:
+        {{ channelListControl.value ? channelListControl.value[0] : "None" }}
+      </p>
+    </form>
+  </div>
+
+  <div class="addChannelDiv">
+    <form class="example-form">
+      <mat-form-field class="example-full-width">
+        <mat-label>Channel</mat-label>
+        <input
+          type="channel"
+          matInput
+          [formControl]="channelFormControl"
+          placeholder="name des Channels"
+        />
+      </mat-form-field>
+    </form>
+
+    <button mat-raised-button color="primary" (click)="addChannel()">
+      new Channel
+    </button>
+  </div>
+
+</div>

@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { MockFirebaseService } from '../../shared/services/mock-firebase.service';
 import { Observable } from 'rxjs';
-import { Data } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -12,7 +10,7 @@ import { ChannelService } from '../../shared/services/channel.service';
 import { Timestamp } from 'firebase/firestore';
 import { Channel } from '../../shared/models/channel.model';
 import { Message } from '../../shared/models/message.model';
-import {MatListModule} from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
@@ -25,12 +23,12 @@ import { MatCardModule } from '@angular/material/card';
     MatInputModule,
     MatButtonModule,
     MatListModule,
-    MatCardModule
+    MatCardModule,
   ],
   templateUrl: './chat-main.component.html',
   styleUrl: './chat-main.component.scss',
 })
-export class ChatMainComponent implements OnInit{
+export class ChatMainComponent implements OnInit {
   @Output() messageClicked = new EventEmitter<void>();
   onMessageClick() {
     this.messageClicked.emit(); // Trigger the event to open the thread panel
@@ -38,7 +36,6 @@ export class ChatMainComponent implements OnInit{
   }
 
   messageFormControl = new FormControl('');
-  channelFormControl = new FormControl('');
   channels$: Observable<Channel[] | null>;
 
   constructor(
@@ -52,26 +49,17 @@ export class ChatMainComponent implements OnInit{
     // Additional logic, if needed
   }
 
-  addChannel() {
-    const channel: Channel = {
-      id: '',
-      name: this.channelFormControl.value ?? '',
-      createdAt: Timestamp.now(),
-      members: ['user1', 'user2'],
-      threads: [],
-    };
-    this.channelService.addChannel(channel);
-  }
-
   addMessage() {
-    this.channelService.getChannel('oN4A5lY9JgYUuMdm2n9c').subscribe((channel) => {
-      if (channel) {
-        console.log('Channel:', channel);
-        this.createMessage(channel);  // Hier verwendest du den Kanal, um die Nachricht hinzuzufügen
-      } else {
-        console.error('Channel not found');
-      }
-    });
+    this.channelService
+      .getChannel('oN4A5lY9JgYUuMdm2n9c')
+      .subscribe((channel) => {
+        if (channel) {
+          console.log('Channel:', channel);
+          this.createMessage(channel);
+        } else {
+          console.error('Channel not found');
+        }
+      });
   }
 
   createMessage(channel: Channel) {
