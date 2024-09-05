@@ -5,6 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../shared/services/auth.service';
 import { User } from '../../shared/models/user.model';
+import { Router } from '@angular/router';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -15,26 +17,36 @@ import { User } from '../../shared/models/user.model';
 })
 export class HeaderComponent implements OnInit {
   currentUser: any;
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
     this.getCurrentUser();
   }
 
+
   getCurrentUser() {
-    this.authService.getCurrentUser().subscribe(user => {
+    this.authService.getCurrentUser().subscribe((user) => {
       if (user) {
         this.currentUser = {
-          id: user.uid,
-          username: user.displayName ?? '',
-          email: user.email ?? '',
-          avatarUrl: user.photoURL ?? '',
-          status: 'online', // You can set the status dynamically
+          username: user.displayName,
+          avatarUrl: user.photoURL,
+          status: 'online',
         };
       } else {
         this.currentUser = null;
       }
-      console.log('Current user:', this.currentUser);
+    });
+  }
+
+  logout() {
+    this.authService.logout().subscribe({
+      next: () => {
+        // Handle successful logout
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        console.error('Logout failed:', error);
+      },
     });
   }
 }

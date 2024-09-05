@@ -1,4 +1,5 @@
 <mat-toolbar class="header">
+  <button mat-flat-button (click)="logout()">Logout</button>
   <span class="spacer"></span>
   <div class="user-info">
     <span class="username">{{ currentUser?.username }}</span>
@@ -6,5 +7,3 @@
   </div>
   <img class="avatar" [src]="currentUser?.avatarUrl" alt="{{ currentUser?.username }}">
 </mat-toolbar>
-
-

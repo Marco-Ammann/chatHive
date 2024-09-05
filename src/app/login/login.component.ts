@@ -35,21 +35,15 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    console.log('onSubmit called');
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       this.authService.login(email, password).subscribe({
-        next: () => {
-          console.log('Login successful');
-          this.router.navigate(['/home']);
-        },
+        next: () => this.router.navigate(['/home']),
         error: (err) => {
           console.error('Login failed');
           alert('Login failed. Please try again.');
         }
       });
-    } else {
-      console.log('Form is invalid');
     }
   }
 }
