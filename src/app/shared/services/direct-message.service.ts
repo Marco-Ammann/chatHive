@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, collection, collectionData, addDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { DirectMessage } from '../models/direct-message.model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class DirectMessageService {
   constructor(private firestore: Firestore) {}
 
-  getDirectMessages(dmId: string): Observable<DirectMessage[]> {
-    const dmCollection = collection(this.firestore, `directMessages/${dmId}/messages`);
-    return collectionData(dmCollection, { idField: 'id' }) as Observable<DirectMessage[]>;
-  }
+  // Öffne oder erstelle eine Direktnachricht zwischen zwei Benutzern
+  openDirectMessage(userId1: string, userId2: string): Observable<DirectMessage> {
+    const dmCollection = collection(this.firestore, 'directMessages');
+    const directMessageId = `${userId1}_${userId2}`; // ID basierend auf den beiden Benutzer-IDs
 
-  sendDirectMessage(dmId: string, message: DirectMessage) {
-    const dmCollection = collection(this.firestore, `directMessages/${dmId}/messages`);
-    return addDoc(dmCollection, message);
+    // Überprüfen, ob die DM bereits existiert, oder eine neue erstellen
+    const dmDoc = doc(this.firestore, `directMessages/${directMessageId}`);
+    return collectionData(dmDoc) as Observable<DirectMessage>;
   }
 }

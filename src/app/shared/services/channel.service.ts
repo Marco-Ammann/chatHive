@@ -1,51 +1,25 @@
 import { Injectable } from '@angular/core';
-import {
-  Firestore,
-  collectionData,
-  collection,
-  addDoc,
-  doc,
-  docData,
-} from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Channel } from '../models/channel.model';
+import { Firestore, collectionData, collection } from '@angular/fire/firestore';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ChannelService {
+  private selectedChannelSubject = new BehaviorSubject<string | null>(null);
+  selectedChannel$ = this.selectedChannelSubject.asObservable();
 
-  private channelsSubject = new BehaviorSubject<Channel[] | null>(null);
-  channels$: Observable<Channel[] | null> = this.channelsSubject.asObservable();
+  constructor(private firestore: Firestore) {}
 
-  constructor(private firestore: Firestore) {
-    this.loadChannels(); // Load channels on service initialization
-  }
-
-  // Method to load channels from Firebase in real-time
-  private loadChannels(): void {
-    const channelCollection = collection(this.firestore, 'channels');
-    collectionData(channelCollection, { idField: 'id' }).subscribe((channels: Channel[]) => {
-        // Automatically update the BehaviorSubject when channels change
-        this.channelsSubject.next(channels);
-      });
-  }
-
-
+  // Lade alle Channels
   getChannels(): Observable<Channel[]> {
     const channelCollection = collection(this.firestore, 'channels');
-    return collectionData(channelCollection, { idField: 'id' }) as Observable<
-      Channel[]
-    >;
+    return collectionData(channelCollection, { idField: 'id' }) as Observable<Channel[]>;
   }
 
-  getChannel(channelId: string): Observable<Channel> {
-    const channelDoc = doc(this.firestore, `channels/${channelId}`);
-    return docData(channelDoc, { idField: 'id' }) as Observable<Channel>;
-  }
-
-  addChannel(channel: Channel) {
-    const channelCollection = collection(this.firestore, 'channels');
-    return addDoc(channelCollection, channel);
+  // Setze den ausgewählten Channel
+  selectChannel(channelId: string): void {
+    this.selectedChannelSubject.next(channelId);
   }
 }

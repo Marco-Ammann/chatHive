@@ -1,21 +1,40 @@
-<mat-card>
-  <mat-card-title>Chat</mat-card-title>
-  <mat-card-content>
-    <form class="example-form">
-      <mat-form-field class="example-full-width">
-        <mat-label>Nachricht</mat-label>
-        <input
-          type="message"
-          matInput
-          [formControl]="messageFormControl"
-          placeholder="deine Nachricht"
-        />
-      </mat-form-field>
-    </form>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-raised-button color="primary" (click)="addMessage()">
-      Senden
-    </button>
-  </mat-card-actions>
+<mat-card class="wrapper">
+  <ng-container>
+    <div class="message-container" #scrollMe>
+      <mat-card *ngFor="let message of messages$ | async; let i = index">
+        <mat-card-title>
+          {{ message.username }}
+          <span class="date">{{
+            message.createdAt.toDate().toLocaleTimeString()
+          }}</span>
+        </mat-card-title>
+        <mat-card-content>
+          <p>{{ message.content }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-container>
+
+  <mat-card class="messageBox">
+    <mat-card-content>
+      <form>
+        <mat-form-field>
+          <mat-label>Nachricht</mat-label>
+          <input
+            type="text"
+            matInput
+            [formControl]="messageFormControl"
+            placeholder="deine Nachricht"
+          />
+        </mat-form-field>
+      </form>
+
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-raised-button color="primary" (click)="addMessage()">
+        Senden
+      </button>
+    </mat-card-actions>
+  </mat-card>
 </mat-card>

@@ -17,6 +17,10 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Timestamp } from 'firebase/firestore';
 import { MatInputModule } from '@angular/material/input';
+import {MatExpansionModule} from '@angular/material/expansion';
+import { DirectMessageService } from '../../shared/services/direct-message.service';
+import { AuthService } from '../../shared/services/auth.service';
+import { User } from '../../shared/models/user.model';
 
 @Component({
   selector: 'app-sidenav',
@@ -30,38 +34,45 @@ import { MatInputModule } from '@angular/material/input';
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatExpansionModule
   ],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
 })
 export class SidenavComponent implements OnInit {
-  channelListForm: FormGroup;
-  channels$: Observable<Channel[] | null>;
-  channelListControl = new FormControl('');
-  channelFormControl = new FormControl('');
+  channels$: Observable<Channel[]> = this.channelService.getChannels();
+  users$: Observable<User[]> = new Observable();
+  currentUserId!: string;
+
   constructor(
-    private messageService: MessageService,
-    private channelService: ChannelService
-  ) {
-    this.channels$ = this.channelService.channels$;
-    this.channelListForm = new FormGroup({
-      name: new FormControl('channelListControl'),
+    private channelService: ChannelService,
+    private authService: AuthService,
+    private directMessageService: DirectMessageService
+  ) {}
+
+  ngOnInit(): void {
+    // Lade alle Channels
+    this.channels$ = this.channelService.getChannels();
+
+    // Lade alle Benutzer und den aktuellen Benutzer
+    this.authService.getCurrentUser().subscribe(user => {
+      if (user) {
+        this.currentUserId = user.id;
+        this.users$ = this.authService.getAllUsers();
+      }
     });
   }
 
-  ngOnInit(): void {
-    // Additional logic, if needed
+  // Wähle einen Channel und zeige Nachrichten in der ChatMain-Komponente
+  selectChannel(channel: Channel): void {
+    this.channelService.selectChannel(channel.id);
+    console.log('Channel selected:', channel);
   }
 
-  addChannel() {
-    const channel: Channel = {
-      id: '',
-      name: this.channelFormControl.value ?? '',
-      createdAt: Timestamp.now(),
-      members: ['user1', 'user2'],
-      threads: [],
-    };
-    this.channelService.addChannel(channel);
+  // Öffne einen Direktnachricht-Chat mit einem Benutzer
+  selectUser(user: User): void {
+    this.directMessageService.openDirectMessage(this.currentUserId, user.id);
+    console.log('Direct message opened with:', user);
   }
 }

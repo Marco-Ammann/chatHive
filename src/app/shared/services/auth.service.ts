@@ -7,11 +7,12 @@ import {
   updateProfile,
   UserCredential,
 } from '@angular/fire/auth';
-import { Firestore, doc, setDoc, updateDoc } from '@angular/fire/firestore';
-import { from, Observable } from 'rxjs';
+import { Firestore, collection, collectionData, doc, setDoc, updateDoc } from '@angular/fire/firestore';
+import { from, map, Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { authState } from '@angular/fire/auth';
 import { RealtimeDatabaseService } from './realtime-database.service';
+import { getDoc } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -90,4 +91,11 @@ export class AuthService {
   getCurrentUser(): Observable<any> {
     return authState(this.auth);
   }
+
+  getAllUsers(): Observable<User[]> {
+    const usersCollection = collection(this.firestore, 'users');
+    return collectionData(usersCollection, { idField: 'id' }) as Observable<User[]>;
+  }
+
+
 }

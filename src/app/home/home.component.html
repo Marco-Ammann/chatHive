@@ -23,10 +23,13 @@
       [class.open]="isThreadPanelOpen"
       [hidden]="currentDevice === 'mobile' && currentView !== 'thread'"
     ></app-thread-panel>
+    <div class="buttons">
+
+      <button (click)="openThreadPanel()">Open Thread</button>
+      <button (click)="closeThreadPanel()">Close Thread</button>
+    </div>
   </div>
 
-  <button (click)="openThreadPanel()">Open Thread</button>
-  <button (click)="closeThreadPanel()">Close Thread</button>
 
   <app-footer class="footer" *ngIf="currentDevice === 'mobile'"></app-footer>
 </div>

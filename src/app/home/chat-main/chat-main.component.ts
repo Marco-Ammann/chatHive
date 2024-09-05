@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -12,6 +12,9 @@ import { Channel } from '../../shared/models/channel.model';
 import { Message } from '../../shared/models/message.model';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
+import { User } from '../../shared/models/user.model';
+import { AuthService } from '../../shared/services/auth.service';
+import { get, set } from 'firebase/database';
 
 @Component({
   selector: 'app-chat-main',
@@ -29,48 +32,76 @@ import { MatCardModule } from '@angular/material/card';
   styleUrl: './chat-main.component.scss',
 })
 export class ChatMainComponent implements OnInit {
-  @Output() messageClicked = new EventEmitter<void>();
-  onMessageClick() {
-    this.messageClicked.emit(); // Trigger the event to open the thread panel
-    console.log('Message clicked');
-  }
+  @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
+
 
   messageFormControl = new FormControl('');
-  channels$: Observable<Channel[] | null>;
+  messages$: Observable<Message[]> = new Observable<Message[]>();
+  selectedChannelId: string | null = null;
+  currentUser: any;
+  users: User[] = [];
 
   constructor(
+    private channelService: ChannelService,
     private messageService: MessageService,
-    private channelService: ChannelService
-  ) {
-    this.channels$ = this.channelService.channels$;
-  }
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    // Additional logic, if needed
+    this.channelService.selectedChannel$.subscribe((channelId) => {
+      this.selectedChannelId = channelId;
+      if (channelId) {
+        this.messages$ = this.messageService.getMessages(channelId).pipe(
+          map((messages: Message[]) =>
+            messages.sort((a, b) => a.createdAt.toMillis() - b.createdAt.toMillis())
+          )
+        );
+        this.scrollToBottom(); // Scrollt zum Ende bei jeder Nachricht
+      }
+    });
+
+    this.getCurrentUser();
+  }
+
+
+  getCurrentUser() {
+    this.authService.getCurrentUser().subscribe((user) => {
+      if (user) {
+        this.currentUser = {
+          id: user.uid,
+          username: user.displayName,
+          avatarUrl: user.photoURL,
+          status: 'online',
+        };
+      } else {
+        this.currentUser = null;
+      }
+    });
   }
 
   addMessage() {
-    this.channelService
-      .getChannel('oN4A5lY9JgYUuMdm2n9c')
-      .subscribe((channel) => {
-        if (channel) {
-          console.log('Channel:', channel);
-          this.createMessage(channel);
-        } else {
-          console.error('Channel not found');
-        }
-      });
+    if (this.selectedChannelId && this.messageFormControl.value) {
+      const message: Message = {
+        id: '',
+        content: this.messageFormControl.value,
+        userId: this.currentUser.id,
+        username: this.currentUser.username,
+        createdAt: Timestamp.now(),
+        channelId: this.selectedChannelId,
+      };
+      this.messageService.addMessage(this.selectedChannelId, message);
+      this.messageFormControl.setValue('');
+      this.scrollToBottom();
+    }
   }
 
-  createMessage(channel: Channel) {
-    const message: Message = {
-      id: 'message1',
-      content: this.messageFormControl.value ?? '',
-      createdAt: Timestamp.now(),
-      userId: 'user1',
-      channelId: channel.id,
-      reactions: {},
-    };
-    this.messageService.addMessage(channel.id, message);
+  scrollToBottom(): void {
+    try {
+      setTimeout(() => {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+      }, 200);
+    } catch (err) {
+      console.error('Scrolling Error:', err);
+    }
   }
 }

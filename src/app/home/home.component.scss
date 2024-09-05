@@ -1,16 +1,37 @@
+.buttons {
+  position: absolute;
+  top: 0;
+  right: 50%;
+  transform: translateX(50%);
+
+
+  z-index: 10;
+}
+
 .home-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  max-height: 100vh;
   transition: all 0.3s ease;
+  background-color: rgb(238, 238, 238);
+  gap: 20px;
 
+  app-header {
+    height: 100px;
+  }
   .content {
     display: flex;
+    flex-direction: row;
     flex: 1;
-    flex-direction: column;
+    gap: 20px;
+    margin: 0 20px;
+    max-height: calc(100% - 100px);
 
     /* Mobile (Default) */
-    .sidenav, .chat-main, .thread-panel {
+    .sidenav,
+    .chat-main,
+    .thread-panel {
       flex: 1 0 auto;
       display: none;
     }

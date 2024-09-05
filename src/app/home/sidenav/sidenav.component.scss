@@ -16,7 +16,7 @@
   padding-right: 8px;
   >form {
     width: 100%;
-    
+
   }
 }
 
@@ -27,3 +27,16 @@
   justify-content: center;
   width: 100%;
 }
+
+mat-list {
+
+  >mat-list-item {
+    cursor: pointer;
+  }
+}
+
+
+mat-accordion {
+  width: 100%;
+}
+

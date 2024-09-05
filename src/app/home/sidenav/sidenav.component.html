@@ -1,39 +1,36 @@
-<div class="wrapper">
-  <div class="channelList">
-    <form [formGroup]="channelListForm">
-      <mat-selection-list
-        #channelList
-        [formControl]="channelListControl"
-        name="channels"
-        [multiple]="false"
-      >
-        @for (channel of channels$ | async; track channel.id) {
-        <mat-list-option [value]="channel.id">{{ channel.name }}</mat-list-option>
-        }
-      </mat-selection-list>
-      <p>
-        Option selected:
-        {{ channelListControl.value ? channelListControl.value[0] : "None" }}
-      </p>
-    </form>
-  </div>
+<mat-card class="wrapper" appearance="raised">
+  <mat-accordion>
+    <!-- Channels Section -->
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Channels
+        </mat-panel-title>
+      </mat-expansion-panel-header>
 
-  <div class="addChannelDiv">
-    <form class="example-form">
-      <mat-form-field class="example-full-width">
-        <mat-label>Channel</mat-label>
-        <input
-          type="channel"
-          matInput
-          [formControl]="channelFormControl"
-          placeholder="name des Channels"
-        />
-      </mat-form-field>
-    </form>
+      <!-- Liste aller Channels -->
+      <mat-list>
+        <mat-list-item *ngFor="let channel of channels$ | async" (click)="selectChannel(channel)">
+          {{ channel.name }}
+        </mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
 
-    <button mat-raised-button color="primary" (click)="addChannel()">
-      new Channel
-    </button>
-  </div>
+    <!-- Users Section -->
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Users
+        </mat-panel-title>
+      </mat-expansion-panel-header>
 
-</div>
+      <!-- Liste aller Benutzer -->
+      <mat-list>
+        <mat-list-item *ngFor="let user of users$ | async" (click)="selectUser(user)">
+          {{ user.username }}
+        </mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+</mat-card>

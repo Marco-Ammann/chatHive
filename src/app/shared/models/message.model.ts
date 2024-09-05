@@ -8,5 +8,6 @@ export interface Message {
   userId: string;
   channelId: string;
   threadId?: string | null;
-  reactions: { [reactionType: string]: string[] };
+  reactions?: { [reactionType: string]: string[] };
+  username: string; // Add the username property
 }
