@@ -46,4 +46,17 @@ export class LoginComponent {
       });
     }
   }
+
+  guestLogin() {
+    this.authService.login('guest@mail.de', 'guestPassword').subscribe({
+      next: () => this.router.navigate(['/home']),
+      error: (err) => {
+        console.error('Login failed');
+        alert('Login failed. Please try again.');
+      }
+    });
+  }
+
+
+
 }
