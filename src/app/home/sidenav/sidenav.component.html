@@ -1,36 +1,55 @@
-<mat-card class="wrapper" appearance="raised">
-  <mat-accordion>
-    <!-- Channels Section -->
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Channels
-        </mat-panel-title>
-      </mat-expansion-panel-header>
+<mat-card class="wrapper">
+  <form [formGroup]="form">
 
-      <!-- Liste aller Channels -->
-      <mat-list>
-        <mat-list-item *ngFor="let channel of channels$ | async" (click)="selectChannel(channel)">
-          {{ channel.name }}
-        </mat-list-item>
-      </mat-list>
-    </mat-expansion-panel>
+    <mat-accordion multi>
 
-    <!-- Users Section -->
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Users
-        </mat-panel-title>
-      </mat-expansion-panel-header>
 
-      <!-- Liste aller Benutzer -->
-      <mat-list>
-        <mat-list-item *ngFor="let user of users$ | async" (click)="selectUser(user)">
-          {{ user.username }}
-        </mat-list-item>
-      </mat-list>
-    </mat-expansion-panel>
-  </mat-accordion>
+
+      <!-- Channels Section -->
+      <mat-expansion-panel [disabled]="!channelsLoaded" [hideToggle]="!channelsLoaded">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Channels</mat-panel-title>
+          <mat-progress-bar mode="indeterminate" *ngIf="!channelsLoaded"></mat-progress-bar>
+        </mat-expansion-panel-header>
+
+
+        <mat-selection-list #list [formControl]="channelsControl" name="channels" [multiple]="false">
+          <mat-list-option *ngFor="let channel of channels$ | async" (click)="selectChannel(channel)"
+            [value]="channel.id">
+            {{ channel.name }}
+          </mat-list-option>
+        </mat-selection-list>
+
+      </mat-expansion-panel>
+
+
+      <!-- Users Section -->
+      <mat-expansion-panel [disabled]="!usersLoaded" [hideToggle]="!usersLoaded">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Users</mat-panel-title>
+          <mat-progress-bar mode="indeterminate" *ngIf="!usersLoaded"></mat-progress-bar>
+        </mat-expansion-panel-header>
+
+
+        <mat-selection-list #list [formControl]="usersControl" name="users" [multiple]="false">
+          <mat-list-option *ngFor="let user of users$ | async" (click)="selectUser(user)" [value]="user.id">
+            {{ user.username }}
+          </mat-list-option>
+        </mat-selection-list>
+
+      </mat-expansion-panel>
+
+      <p>
+        Option selected:
+        {{
+        usersControl.value
+        ? usersControl.value
+        : channelsControl.value
+        ? channelsControl.value
+        : "None"
+        }}
+      </p>
+    </mat-accordion>
+  </form>
 
 </mat-card>

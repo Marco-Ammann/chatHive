@@ -1,20 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButtonModule, MatFabButton } from '@angular/material/button';
 import { MessageService } from '../../shared/services/message.service';
 import { ChannelService } from '../../shared/services/channel.service';
 import { Timestamp } from 'firebase/firestore';
-import { Channel } from '../../shared/models/channel.model';
 import { Message } from '../../shared/models/message.model';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { User } from '../../shared/models/user.model';
 import { AuthService } from '../../shared/services/auth.service';
-import { get, set } from 'firebase/database';
+import { MatIconModule } from '@angular/material/icon';
+import { get } from 'firebase/database';
 
 @Component({
   selector: 'app-chat-main',
@@ -27,6 +27,9 @@ import { get, set } from 'firebase/database';
     MatButtonModule,
     MatListModule,
     MatCardModule,
+    MatFabButton,
+    MatIconModule,
+    FormsModule,
   ],
   templateUrl: './chat-main.component.html',
   styleUrl: './chat-main.component.scss',
@@ -61,6 +64,18 @@ export class ChatMainComponent implements OnInit {
     });
 
     this.getCurrentUser();
+    this.authService.getAllUsers().subscribe((users) => {
+      this.users = users;
+    });
+  }
+
+  getAvatarUrl(userId: string): string {
+    const user = this.users.find((user) => user.id === userId);
+    return user?.avatarUrl || '';
+  }
+
+  trackById(index: number, message: any): string {
+    return message.id;
   }
 
 
@@ -73,6 +88,7 @@ export class ChatMainComponent implements OnInit {
           avatarUrl: user.photoURL,
           status: 'online',
         };
+        console.log('Current User:', this.currentUser);
       } else {
         this.currentUser = null;
       }
@@ -93,6 +109,12 @@ export class ChatMainComponent implements OnInit {
       this.messageFormControl.setValue('');
       this.scrollToBottom();
     }
+  }
+
+  sendMessage(event?: Event) {
+
+      event?.preventDefault();
+      this.addMessage();
   }
 
   scrollToBottom(): void {

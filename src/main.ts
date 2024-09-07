@@ -18,6 +18,6 @@ bootstrapApplication(AppComponent, {
     provideDatabase(() => getDatabase()),
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
-    provideAnimationsAsync(),
+    provideAnimationsAsync(), provideAnimationsAsync(),
   ]
 });

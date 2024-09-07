@@ -3,40 +3,31 @@
   flex-direction: column;
   align-items: center;
   height: 100%;
-  width: 100%;
   margin: auto;
 }
 
-.channelList{
+form {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
+  gap: 10px;
   width: 100%;
-  padding-right: 8px;
-  >form {
-    width: 100%;
-
-  }
+  max-width: 400px;
 }
 
-.addChannelDiv {
+mat-selection-list {
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
   align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-mat-list {
-
-  >mat-list-item {
-    cursor: pointer;
-  }
 }
 
 
-mat-accordion {
-  width: 100%;
+::ng-deep mat-expansion-panel-header span.mat-content {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  overflow: hidden;
+  align-items: center;
 }
-

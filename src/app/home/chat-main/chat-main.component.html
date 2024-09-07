@@ -1,40 +1,53 @@
 <mat-card class="wrapper">
-  <ng-container>
-    <div class="message-container" #scrollMe>
-      <mat-card *ngFor="let message of messages$ | async; let i = index">
+  <ng-container class="message-container" #scrollMe>
+    <mat-card
+      [ngClass]="{'own-message': message.userId == currentUser.id, 'other-message': message.userId != currentUser.id}"
+      appearance="raised" *ngFor="let message of messages$ | async; trackBy: trackById">
+      <mat-card-header [ngClass]="{'own-message-header': message.userId == currentUser.id, 'other-message-header': message.userId != currentUser.id}">
+        <img mat-card-avatar [src]="getAvatarUrl(message.userId)" alt="Photo of {{ message.username }}" />
         <mat-card-title>
           {{ message.username }}
           <span class="date">{{
-            message.createdAt.toDate().toLocaleTimeString()
-          }}</span>
+            message.createdAt.toDate().toLocaleTimeString('de-DE', {
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+            }}</span>
         </mat-card-title>
-        <mat-card-content>
-          <p>{{ message.content }}</p>
-        </mat-card-content>
-      </mat-card>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>{{ message.content }}</p>
+      </mat-card-content>
+    </mat-card>
+    <div *ngIf="(messages$ | async)?.length === 0" class="noMessages">
+      <p>Keine Nachrichten vorhanden</p>
     </div>
   </ng-container>
 
   <mat-card class="messageBox">
     <mat-card-content>
-      <form>
-        <mat-form-field>
-          <mat-label>Nachricht</mat-label>
-          <input
-            type="text"
-            matInput
-            [formControl]="messageFormControl"
-            placeholder="deine Nachricht"
-          />
-        </mat-form-field>
+      <form (ngSubmit)="addMessage()">
+        <div class="message-input-container">
+          <textarea matInput [formControl]="messageFormControl" placeholder="Nachricht an #Office-team"
+            class="message-textarea" rows="1" (keydown.enter)="sendMessage($event)"></textarea>
+
+          <div class="message-actions">
+            <button mat-icon-button>
+              <mat-icon>add</mat-icon>
+            </button>
+            <button mat-icon-button>
+              <mat-icon>emoji_emotions</mat-icon>
+            </button>
+            <button mat-icon-button>
+              <mat-icon>alternate_email</mat-icon>
+            </button>
+          </div>
+        </div>
+        <button mat-icon-button color="primary" type="submit" class="send-button">
+          <mat-icon>send</mat-icon>
+        </button>
       </form>
-
     </mat-card-content>
-
-    <mat-card-actions>
-      <button mat-raised-button color="primary" (click)="addMessage()">
-        Senden
-      </button>
-    </mat-card-actions>
   </mat-card>
 </mat-card>
