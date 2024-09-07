@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 25px;
   padding: 20px;
   height: 100%;
 }
@@ -12,6 +11,10 @@
   max-height: calc(100% - 100px);
   flex-grow: 1;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding-bottom: 25px;
 }
 
 p {
