@@ -1,5 +1,5 @@
 <mat-card class="wrapper">
-  <ng-container class="message-container" #scrollMe>
+  <div class="message-container" #scrollMe>
     <mat-card
       [ngClass]="{'own-message': message.userId == currentUser.id, 'other-message': message.userId != currentUser.id}"
       appearance="raised" *ngFor="let message of messages$ | async; trackBy: trackById">
@@ -23,7 +23,7 @@
     <div *ngIf="(messages$ | async)?.length === 0" class="noMessages">
       <p>Keine Nachrichten vorhanden</p>
     </div>
-  </ng-container>
+  </div>
 
   <mat-card class="messageBox">
     <mat-card-content>

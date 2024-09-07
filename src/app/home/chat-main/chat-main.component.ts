@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -14,7 +14,6 @@ import { MatCardModule } from '@angular/material/card';
 import { User } from '../../shared/models/user.model';
 import { AuthService } from '../../shared/services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
-import { get } from 'firebase/database';
 
 @Component({
   selector: 'app-chat-main',
@@ -34,7 +33,7 @@ import { get } from 'firebase/database';
   templateUrl: './chat-main.component.html',
   styleUrl: './chat-main.component.scss',
 })
-export class ChatMainComponent implements OnInit {
+export class ChatMainComponent implements OnInit  {
   @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
 
 
@@ -59,7 +58,7 @@ export class ChatMainComponent implements OnInit {
             messages.sort((a, b) => a.createdAt.toMillis() - b.createdAt.toMillis())
           )
         );
-        this.scrollToBottom(); // Scrollt zum Ende bei jeder Nachricht
+        this.scrollToBottom();
       }
     });
 
@@ -68,6 +67,8 @@ export class ChatMainComponent implements OnInit {
       this.users = users;
     });
   }
+
+
 
   getAvatarUrl(userId: string): string {
     const user = this.users.find((user) => user.id === userId);
@@ -119,6 +120,7 @@ export class ChatMainComponent implements OnInit {
 
   scrollToBottom(): void {
     try {
+      console.log('Scrolling to bottom...');
       setTimeout(() => {
       this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
       }, 200);

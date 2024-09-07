@@ -15,19 +15,17 @@
   max-height: 100vh;
   transition: all 0.3s ease;
   background-color: rgb(238, 238, 238);
-  gap: 20px;
 
   app-header {
     height: 100px;
+    margin-bottom: 20px;
   }
   .content {
     display: flex;
     flex-direction: row;
-    flex: 1;
     gap: 20px;
     margin: 0 20px;
-    max-height: calc(100% - 100px);
-    overflow: auto;
+    height: calc(100% - 120px);
 
     /* Mobile (Default) */
     .sidenav,
@@ -83,7 +81,7 @@
     }
 
     .chat-main {
-      flex: 1;
+      height: 100%;
       display: block;
     }
 
