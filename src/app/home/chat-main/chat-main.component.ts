@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import {
+  AfterViewChecked,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { map, Observable, of } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -14,6 +20,8 @@ import { MatCardModule } from '@angular/material/card';
 import { User } from '../../shared/models/user.model';
 import { AuthService } from '../../shared/services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import {MatMenuModule} from '@angular/material/menu';
 
 @Component({
   selector: 'app-chat-main',
@@ -29,19 +37,22 @@ import { MatIconModule } from '@angular/material/icon';
     MatFabButton,
     MatIconModule,
     FormsModule,
+    MatDividerModule,
+    MatMenuModule
   ],
   templateUrl: './chat-main.component.html',
   styleUrl: './chat-main.component.scss',
 })
-export class ChatMainComponent implements OnInit  {
+export class ChatMainComponent implements OnInit {
   @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
-
 
   messageFormControl = new FormControl('');
   messages$: Observable<Message[]> = new Observable<Message[]>();
   selectedChannelId: string | null = null;
   currentUser: any;
   users: User[] = [];
+  editingMessageId: string | null = null;
+  editMessageFormControl = new FormControl('');
 
   constructor(
     private channelService: ChannelService,
@@ -55,11 +66,18 @@ export class ChatMainComponent implements OnInit  {
       if (channelId) {
         this.messages$ = this.messageService.getMessages(channelId).pipe(
           map((messages: Message[]) =>
-            messages.sort((a, b) => a.createdAt.toMillis() - b.createdAt.toMillis())
+            messages.length > 0
+              ? messages.sort((a, b) => a.createdAt.toMillis() - b.createdAt.toMillis())
+              : []
           )
         );
         this.scrollToBottom();
+      } else {
+        this.messages$ = of([]);
       }
+
+
+
     });
 
     this.getCurrentUser();
@@ -67,8 +85,6 @@ export class ChatMainComponent implements OnInit  {
       this.users = users;
     });
   }
-
-
 
   getAvatarUrl(userId: string): string {
     const user = this.users.find((user) => user.id === userId);
@@ -78,7 +94,6 @@ export class ChatMainComponent implements OnInit  {
   trackById(index: number, message: any): string {
     return message.id;
   }
-
 
   getCurrentUser() {
     this.authService.getCurrentUser().subscribe((user) => {
@@ -112,17 +127,55 @@ export class ChatMainComponent implements OnInit  {
     }
   }
 
-  sendMessage(event?: Event) {
+  deleteMessage(channelId: string, messageId: string) {
+    this.messageService
+      .deleteMessage(channelId, messageId)
+      .then(() => {
+        console.log('Message deleted');
+      })
+      .catch((error) => {
+        console.error('Error deleting message: ', error);
+      });
+  }
 
-      event?.preventDefault();
-      this.addMessage();
+  // Methode, um den Bearbeitungsmodus zu aktivieren
+  startEditMessage(message: Message) {
+    this.editingMessageId = message.id;
+    this.editMessageFormControl.setValue(message.content);
+  }
+
+  // Methode, um das Bearbeiten einer Nachricht abzuschließen
+  saveEditedMessage() {
+    if (this.selectedChannelId && this.editingMessageId) {
+      const updatedContent = this.editMessageFormControl.value ?? '';
+      this.messageService
+        .updateMessage(
+          this.selectedChannelId,
+          this.editingMessageId,
+          updatedContent
+        )
+        .then(() => {
+          this.editingMessageId = null; // Reset editing mode
+        });
+    }
+  }
+
+  // Methode, um die Bearbeitung abzubrechen
+  cancelEditMessage() {
+    this.editingMessageId = null;
+  }
+
+  sendMessage(event?: Event) {
+    event?.preventDefault();
+    this.addMessage();
   }
 
   scrollToBottom(): void {
     try {
       console.log('Scrolling to bottom...');
       setTimeout(() => {
-      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+        this.myScrollContainer.nativeElement.scrollTop =
+          this.myScrollContainer.nativeElement.scrollHeight;
       }, 200);
     } catch (err) {
       console.error('Scrolling Error:', err);
