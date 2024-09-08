@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Channel } from '../models/channel.model';
-import { Firestore, collectionData, collection } from '@angular/fire/firestore';
+import { Firestore, collectionData, collection, addDoc, DocumentReference, DocumentData } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,11 @@ export class ChannelService {
   selectedChannel$ = this.selectedChannelSubject.asObservable();
 
   constructor(private firestore: Firestore) {}
+
+  addChannel(channel: Omit<Channel, 'id'>): Promise<DocumentReference<DocumentData>> {
+    const channelCollection = collection(this.firestore, 'channels');
+    return addDoc(channelCollection, channel); // Rückgabe des DocumentReference anstelle von void
+  }
 
   // Lade alle Channels
   getChannels(): Observable<Channel[]> {

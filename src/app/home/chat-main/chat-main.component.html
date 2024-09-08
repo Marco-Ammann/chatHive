@@ -11,7 +11,7 @@
           <mat-card-header [ngClass]="{'reverse-layout': message.userId === currentUser.id}">
             <div class="messageHeader">
               <!-- Avatar und Name/Uhrzeit -->
-              <div class="messageAvaterAndInfo"> <!--flex-direction row-reverse if own message-->
+              <div class="messageAvaterAndInfo">
                 <img mat-card-avatar [src]="getAvatarUrl(message.userId)" alt="Avatar" />
                 <div class="messageInfo">
                   <mat-card-title>
@@ -85,7 +85,7 @@
     <mat-card-content>
       <form (ngSubmit)="addMessage()">
         <div class="message-input-container">
-          <textarea matInput [formControl]="messageFormControl" placeholder="Nachricht an #Office-team"
+          <textarea matInput [formControl]="messageFormControl" placeholder="Type a message"
             class="message-textarea" rows="1" (keydown.enter)="sendMessage($event)">
         </textarea>
 

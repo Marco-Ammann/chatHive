@@ -20,6 +20,8 @@
           </mat-list-option>
         </mat-selection-list>
 
+        <button mat-raised-button (click)="openNewChannelDialog()">new Channel</button>
+
       </mat-expansion-panel>
 
 
@@ -36,19 +38,7 @@
             {{ user.username }}
           </mat-list-option>
         </mat-selection-list>
-
       </mat-expansion-panel>
-
-      <p>
-        Option selected:
-        {{
-        usersControl.value
-        ? usersControl.value
-        : channelsControl.value
-        ? channelsControl.value
-        : "None"
-        }}
-      </p>
     </mat-accordion>
   </form>
 

@@ -5,7 +5,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { Channel } from '../../shared/models/channel.model';
 import { Observable } from 'rxjs';
-import { MessageService } from '../../shared/services/message.service';
 import { ChannelService } from '../../shared/services/channel.service';
 import { CommonModule } from '@angular/common';
 import {
@@ -15,14 +14,16 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { Timestamp } from 'firebase/firestore';
 import { MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { DirectMessageService } from '../../shared/services/direct-message.service';
 import { AuthService } from '../../shared/services/auth.service';
 import { User } from '../../shared/models/user.model';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Timestamp } from 'firebase/firestore';
+import { NewChannelDialogComponent } from './new-channel-dialog/new-channel-dialog.component';
 
 @Component({
   selector: 'app-sidenav',
@@ -39,7 +40,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     MatInputModule,
     MatExpansionModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatDialogModule,
   ],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
@@ -54,14 +56,14 @@ export class SidenavComponent implements OnInit {
   channelsControl = new FormControl();
   usersControl = new FormControl();
 
-  // Flags für das Laden von Channels und Benutzern
   usersLoaded = false;
   channelsLoaded = false;
 
   constructor(
     private channelService: ChannelService,
     private authService: AuthService,
-    private directMessageService: DirectMessageService
+    private directMessageService: DirectMessageService,
+    private dialog: MatDialog
   ) {
     this.form = new FormGroup({
       channelsControl: this.channelsControl,
@@ -70,20 +72,20 @@ export class SidenavComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Lade Channels und setze das Flag, wenn fertig
-    this.channels$ = this.channelService.getChannels();
-    this.channels$.subscribe(() => {
-      this.channelsLoaded = true;
-    });
+    this.loadChannels();
+    this.loadUsers();
+  }
 
-    // Lade Benutzer und setze das Flag, wenn fertig
+  private loadChannels(): void {
+    this.channels$.subscribe(() => (this.channelsLoaded = true));
+  }
+
+  private loadUsers(): void {
     this.authService.getCurrentUser().subscribe((user) => {
       if (user) {
-        this.currentUserId = user.id;
+        this.currentUserId = user.uid;
         this.users$ = this.authService.getAllUsers();
-        this.users$.subscribe(() => {
-          this.usersLoaded = true;
-        });
+        this.users$.subscribe(() => (this.usersLoaded = true));
       }
     });
   }
@@ -91,15 +93,36 @@ export class SidenavComponent implements OnInit {
   selectChannel(channel: Channel): void {
     this.selectedItemId = channel.id;
     this.channelService.selectChannel(channel.id);
-    this.usersControl.reset(); // Setze User-Auswahl zurück
-    console.log('Channel selected:', channel);
+    this.form.controls['usersControl'].reset();
   }
 
   selectUser(user: User): void {
     this.selectedItemId = user.id;
     this.directMessageService.openDirectMessage(this.currentUserId, user.id);
-    this.channelsControl.reset(); // Setze Channel-Auswahl zurück
-    console.log('Direct message opened with:', user);
+    this.form.controls['channelsControl'].reset();
+  }
+
+  openNewChannelDialog(): void {
+    this.dialog
+      .open(NewChannelDialogComponent)
+      .afterClosed()
+      .subscribe((result) => {
+        if (this.currentUserId && result?.name) {
+          this.createChannel(result.name);
+        }
+      });
+  }
+
+  private createChannel(name: string): void {
+    const newChannel: Omit<Channel, 'id'> = {
+      name: '#' + name,
+      createdAt: Timestamp.now(),
+      members: [this.currentUserId],
+      threads: [],
+    };
+    this.channelService.addChannel(newChannel).then((docRef) => {
+      console.log('New channel created with ID:', docRef.id);
+    });
   }
 
   isActive(itemId: string): boolean {

@@ -21,7 +21,7 @@ import { User } from '../../shared/models/user.model';
 import { AuthService } from '../../shared/services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-chat-main',
@@ -38,7 +38,7 @@ import {MatMenuModule} from '@angular/material/menu';
     MatIconModule,
     FormsModule,
     MatDividerModule,
-    MatMenuModule
+    MatMenuModule,
   ],
   templateUrl: './chat-main.component.html',
   styleUrl: './chat-main.component.scss',
@@ -64,20 +64,21 @@ export class ChatMainComponent implements OnInit {
     this.channelService.selectedChannel$.subscribe((channelId) => {
       this.selectedChannelId = channelId;
       if (channelId) {
-        this.messages$ = this.messageService.getMessages(channelId).pipe(
-          map((messages: Message[]) =>
-            messages.length > 0
-              ? messages.sort((a, b) => a.createdAt.toMillis() - b.createdAt.toMillis())
-              : []
-          )
-        );
+        this.messages$ = this.messageService
+          .getMessages(channelId)
+          .pipe(
+            map((messages: Message[]) =>
+              messages.length > 0
+                ? messages.sort(
+                    (a, b) => a.createdAt.toMillis() - b.createdAt.toMillis()
+                  )
+                : []
+            )
+          );
         this.scrollToBottom();
       } else {
         this.messages$ = of([]);
       }
-
-
-
     });
 
     this.getCurrentUser();
@@ -124,6 +125,8 @@ export class ChatMainComponent implements OnInit {
       this.messageService.addMessage(this.selectedChannelId, message);
       this.messageFormControl.setValue('');
       this.scrollToBottom();
+    } else {
+      alert('Please select a channel and enter a message');
     }
   }
 
@@ -176,7 +179,7 @@ export class ChatMainComponent implements OnInit {
       setTimeout(() => {
         this.myScrollContainer.nativeElement.scrollTop =
           this.myScrollContainer.nativeElement.scrollHeight;
-      }, 200);
+      }, 400);
     } catch (err) {
       console.error('Scrolling Error:', err);
     }
