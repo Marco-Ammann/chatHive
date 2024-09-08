@@ -35,7 +35,13 @@
 
         <mat-selection-list #list [formControl]="usersControl" name="users" [multiple]="false">
           <mat-list-option *ngFor="let user of users$ | async" (click)="selectUser(user)" [value]="user.id">
-            {{ user.username }}
+            <span>
+              {{ user.username }}
+            </span>
+
+            <div class="statusCircle"
+              [ngClass]="{ online: user.status === 'online', offline: user.status === 'offline' }"></div>
+
           </mat-list-option>
         </mat-selection-list>
       </mat-expansion-panel>

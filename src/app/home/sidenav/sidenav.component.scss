@@ -31,3 +31,21 @@ mat-selection-list {
   overflow: hidden;
   align-items: center;
 }
+
+.statusCircle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.online {
+  background-color: green;
+}
+
+.offline {
+  background-color: red;
+}
