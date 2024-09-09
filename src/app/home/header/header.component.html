@@ -1,14 +1,14 @@
 <mat-toolbar class="header">
-  <mat-card-header class="logo">
+  <div class="logo">
+    <img mat-card-lg-image src="assets/logo/chatHive_logo_3.png" alt="chatHive" class="logo" />
     <mat-card-title>
       chatHive
     </mat-card-title>
-    <img mat-card-lg-image src="assets/logo/chatHive_logo_3.png" alt="chatHive" class="logo" />
-  </mat-card-header>
+  </div>
 
   <span class="spacer"></span>
   <div class="headerMenu">
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="menu for the message">
+    <button class="headerMenuBtn" mat-icon-button [matMenuTriggerFor]="menu" aria-label="menu for the message">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu" yPosition="below" xPosition="before">

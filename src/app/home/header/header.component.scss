@@ -1,8 +1,9 @@
 .logo {
   display: flex;
   align-items: center;
+  cursor: pointer;
 
-  gap: 10px;
+  gap: 4px;
   padding: 0;
 
   mat-card-title {
@@ -13,9 +14,16 @@
   }
 
   img {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
   }
+  &:hover {
+    filter: drop-shadow(2px 2px 3px #888);
+  }
+}
+
+.headerMenuBtn {
+  margin-right: 8px;
 }
 
 
@@ -37,14 +45,15 @@
 
     .status {
       font-size: 12px;
+      font-weight: 500;
       color: #ccc;
 
       &.online {
-        color: green;
+        color: rgb(0, 201, 0);
       }
 
       &.offline {
-        color: red;
+        color: #888;
       }
 
       &.away {
