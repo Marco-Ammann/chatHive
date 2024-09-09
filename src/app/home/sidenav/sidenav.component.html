@@ -1,17 +1,12 @@
 <mat-card class="wrapper">
   <form [formGroup]="form">
-
-    <mat-accordion multi>
-
-
-
+    <mat-accordion>
       <!-- Channels Section -->
-      <mat-expansion-panel [disabled]="!channelsLoaded" [hideToggle]="!channelsLoaded">
+      <mat-expansion-panel [disabled]="!channelsLoaded" [hideToggle]="!channelsLoaded" [expanded]="channelsLoaded">
         <mat-expansion-panel-header>
           <mat-panel-title>Channels</mat-panel-title>
           <mat-progress-bar mode="indeterminate" *ngIf="!channelsLoaded"></mat-progress-bar>
         </mat-expansion-panel-header>
-
 
         <mat-selection-list #list [formControl]="channelsControl" name="channels" [multiple]="false">
           <mat-list-option *ngFor="let channel of channels$ | async" (click)="selectChannel(channel)"
@@ -20,10 +15,10 @@
           </mat-list-option>
         </mat-selection-list>
 
-        <button mat-raised-button (click)="openNewChannelDialog()">new Channel</button>
-
+        <button mat-raised-button (click)="openNewChannelDialog()">
+          new Channel
+        </button>
       </mat-expansion-panel>
-
 
       <!-- Users Section -->
       <mat-expansion-panel [disabled]="!usersLoaded" [hideToggle]="!usersLoaded">
@@ -32,20 +27,16 @@
           <mat-progress-bar mode="indeterminate" *ngIf="!usersLoaded"></mat-progress-bar>
         </mat-expansion-panel-header>
 
-
         <mat-selection-list #list [formControl]="usersControl" name="users" [multiple]="false">
           <mat-list-option *ngFor="let user of users$ | async" (click)="selectUser(user)" [value]="user.id">
             <span>
               {{ user.username }}
             </span>
 
-            <div class="statusCircle"
-              [ngClass]="{ online: user.status === 'online', offline: user.status === 'offline' }"></div>
-
+            <div class="statusCircle" [ngClass]="user.status"></div>
           </mat-list-option>
         </mat-selection-list>
       </mat-expansion-panel>
     </mat-accordion>
   </form>
-
 </mat-card>

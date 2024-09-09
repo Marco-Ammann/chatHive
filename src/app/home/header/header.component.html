@@ -1,9 +1,34 @@
 <mat-toolbar class="header">
-  <button color="primary" mat-flat-button (click)="logout()">Logout</button>
+  <mat-card-header class="logo">
+    <mat-card-title>
+      chatHive
+    </mat-card-title>
+    <img mat-card-lg-image src="assets/logo/chatHive_logo_3.png" alt="chatHive" class="logo" />
+  </mat-card-header>
+
   <span class="spacer"></span>
+  <div class="headerMenu">
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="menu for the message">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu" yPosition="below" xPosition="before">
+      <button mat-menu-item [matMenuTriggerFor]="status">
+        <span>Status ändern</span>
+      </button>
+      <button mat-menu-item (click)="logout()">Logout</button>
+    </mat-menu>
+
+
+    <mat-menu #status="matMenu" yPosition="below" xPosition="after">
+      <button mat-menu-item (click)="changeStatus('online')">Online</button>
+      <button mat-menu-item (click)="changeStatus('away')">Abwesend</button>
+      <button mat-menu-item (click)="changeStatus('busy')">Beschäftigt</button>
+    </mat-menu>
+  </div>
   <div class="user-info">
     <span class="username">{{ currentUser?.username }}</span>
-    <span class="status" [ngClass]="currentUser?.status">{{ currentUser?.status }}</span>
+    <span [matMenuTriggerFor]="menu" class="status" [ngClass]="currentUser?.status">{{ currentUser?.status }}</span>
   </div>
   <img class="avatar" [src]="currentUser?.avatarUrl" alt="{{ currentUser?.username }}">
+
 </mat-toolbar>

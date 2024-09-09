@@ -7,7 +7,14 @@ import {
   updateProfile,
   UserCredential,
 } from '@angular/fire/auth';
-import { Firestore, collection, collectionData, doc, setDoc, updateDoc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  doc,
+  setDoc,
+  updateDoc,
+} from '@angular/fire/firestore';
 import { from, map, Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { authState } from '@angular/fire/auth';
@@ -49,7 +56,12 @@ export class AuthService {
             const userRef = doc(this.firestore, `users/${user.uid}`);
             return setDoc(userRef, newUser).then(() => {
               // Set status in Realtime Database
-              this.realtimeDbService.writeUserData(user.uid, name, email, 'online');
+              this.realtimeDbService.writeUserData(
+                user.uid,
+                name,
+                email,
+                'online'
+              );
             });
           });
         }
@@ -57,18 +69,19 @@ export class AuthService {
     );
   }
 
-
   login(email: string, password: string) {
     return from(
-      signInWithEmailAndPassword(this.auth, email, password).then((userCredential) => {
-        const user = userCredential.user;
-        const userRef = doc(this.firestore, `users/${user.uid}`);
+      signInWithEmailAndPassword(this.auth, email, password).then(
+        (userCredential) => {
+          const user = userCredential.user;
+          const userRef = doc(this.firestore, `users/${user.uid}`);
 
-        // Setze den Status in Firestore und Realtime Database auf "online"
-        return updateDoc(userRef, { status: 'online' }).then(() => {
-          this.realtimeDbService.updateUserStatus(user.uid, 'online');
-        });
-      })
+          // Setze den Status in Firestore und Realtime Database auf "online"
+          return updateDoc(userRef, { status: 'online' }).then(() => {
+            this.realtimeDbService.updateUserStatus(user.uid, 'online');
+          });
+        }
+      )
     );
   }
 
@@ -78,11 +91,15 @@ export class AuthService {
       const userRef = doc(this.firestore, `users/${user.uid}`);
 
       // Setze den Status in Firestore und Realtime Database auf "offline"
-      return from(updateDoc(userRef, { status: 'offline' }).then(() => {
-        this.realtimeDbService.updateUserStatus(user.uid, 'offline').then(() => {
-          return signOut(this.auth);
-        });
-      }));
+      return from(
+        updateDoc(userRef, { status: 'offline' }).then(() => {
+          this.realtimeDbService
+            .updateUserStatus(user.uid, 'offline')
+            .then(() => {
+              return signOut(this.auth);
+            });
+        })
+      );
     } else {
       return from(Promise.reject('No user is currently logged in'));
     }
@@ -94,8 +111,17 @@ export class AuthService {
 
   getAllUsers(): Observable<User[]> {
     const usersCollection = collection(this.firestore, 'users');
-    return collectionData(usersCollection, { idField: 'id' }) as Observable<User[]>;
+    return collectionData(usersCollection, { idField: 'id' }) as Observable<
+      User[]
+    >;
   }
 
-
+  updateUserStatus(userId: string, newStatus: string): Observable<void> {
+    const userRef = doc(this.firestore, `users/${userId}`);
+    return from(
+      updateDoc(userRef, { status: newStatus }).then(() => {
+        return this.realtimeDbService.updateUserStatus(userId, newStatus);
+      })
+    );
+  }
 }

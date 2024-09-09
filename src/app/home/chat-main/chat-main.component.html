@@ -2,67 +2,85 @@
   <div class="message-container" #scrollMe>
     <ng-container *ngIf="messages$ | async as messages">
       <ng-container *ngIf="messages.length > 0; else noMessages">
-        <mat-card class="message" *ngFor="let message of messages; trackBy: trackById" [ngClass]="{
+        <!-- Nachrichten -->
+        <ng-container *ngFor="let message of messages; trackBy: trackById; let i=index">
+
+          <!-- Trennlinie zwischen Nachrichten wenn ein anderer Tag -->
+          <ng-container
+            *ngIf="i === 0 || (i > 0 && messages[i].createdAt.toDate().getDate() !== messages[i - 1].createdAt.toDate().getDate())">
+            <div class="date-divider">
+              <div class="divider-line"></div>
+              <span>{{ message.createdAt.toDate().toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month:
+                'long' }) }}</span>
+              <div class="divider-line"></div>
+            </div>
+          </ng-container>
+
+
+          <!-- Nachricht -->
+          <mat-card class="message" [ngClass]="{
           'own-message': message.userId === currentUser.id,
           'other-message': message.userId !== currentUser.id
         }" appearance="raised">
 
-          <!-- Nachricht Header mit Avatar, Name, Zeit und Menü -->
-          <mat-card-header [ngClass]="{'reverse-layout': message.userId === currentUser.id}">
-            <div class="messageHeader">
-              <!-- Avatar und Name/Uhrzeit -->
-              <div class="messageAvaterAndInfo">
-                <img mat-card-avatar [src]="getAvatarUrl(message.userId)" alt="Avatar" />
-                <div class="messageInfo">
-                  <mat-card-title>
-                    <span>
-                      {{ message.userId === currentUser.id ? 'Du' : message.username }}
-                    </span>
+            <!-- Nachricht Header mit Avatar, Name, Zeit und Menü -->
+            <mat-card-header [ngClass]="{'reverse-layout': message.userId === currentUser.id}">
+              <div class="messageHeader">
+                <!-- Avatar und Name/Uhrzeit -->
+                <div class="messageAvaterAndInfo">
+                  <img mat-card-avatar [src]="getAvatarUrl(message.userId)" alt="Avatar" />
+                  <div class="messageInfo">
+                    <mat-card-title>
+                      <span>
+                        {{ message.userId === currentUser.id ? 'Du' : message.username }}
+                      </span>
+                    </mat-card-title>
+                  </div>
+                </div>
 
-                    <span class="date">
-                      {{ message.createdAt.toDate().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-                      }}
-                    </span>
-                  </mat-card-title>
+                <!-- Menü für Nachrichtenaktionen -->
+                <div class="messageMenuBtn">
+                  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="menu for the message">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu" yPosition="below" xPosition="before">
+                    <button mat-menu-item (click)="startEditMessage(message)">
+                      <mat-icon>edit</mat-icon>
+                      <span>Edit</span>
+                    </button>
+                    <button mat-menu-item (click)="deleteMessage(selectedChannelId!, message.id!)">
+                      <mat-icon>delete</mat-icon>
+                      <span>Delete</span>
+                    </button>
+                  </mat-menu>
                 </div>
               </div>
+            </mat-card-header>
 
-              <!-- Menü für Nachrichtenaktionen -->
-              <div class="messageMenuBtn">
-                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="menu for the message">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu" yPosition="below" xPosition="before">
-                  <button mat-menu-item (click)="startEditMessage(message)">
-                    <mat-icon>edit</mat-icon>
-                    <span>Edit</span>
-                  </button>
-                  <button mat-menu-item (click)="deleteMessage(selectedChannelId!, message.id!)">
-                    <mat-icon>delete</mat-icon>
-                    <span>Delete</span>
-                  </button>
-                </mat-menu>
-              </div>
-            </div>
-          </mat-card-header>
+            <!-- Bearbeitungsmodus -->
+            <mat-card-content class="editContainer" *ngIf="editingMessageId === message.id">
+              <mat-form-field>
+                <mat-label>Edit message</mat-label>
+                <textarea matInput [formControl]="editMessageFormControl"></textarea>
+              </mat-form-field>
+              <mat-card-actions>
+                <button mat-raised-button color="primary" (click)="saveEditedMessage()">Save</button>
+                <button mat-raised-button (click)="cancelEditMessage()">Cancel</button>
+              </mat-card-actions>
+            </mat-card-content>
 
-          <!-- Bearbeitungsmodus -->
-          <mat-card-content class="editContainer" *ngIf="editingMessageId === message.id">
-            <mat-form-field>
-              <mat-label>Edit message</mat-label>
-              <textarea matInput [formControl]="editMessageFormControl"></textarea>
-            </mat-form-field>
-            <mat-card-actions>
-              <button mat-raised-button color="primary" (click)="saveEditedMessage()">Save</button>
-              <button mat-raised-button (click)="cancelEditMessage()">Cancel</button>
-            </mat-card-actions>
-          </mat-card-content>
+            <!-- Normale Anzeige, wenn nicht im Bearbeitungsmodus -->
+            <mat-card-content *ngIf="editingMessageId !== message.id">
+              <p>{{ message.content }}</p>
+              <span class="date">
+                {{ message.createdAt.toDate().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit'})
+                }}
+              </span>
+            </mat-card-content>
 
-          <!-- Normale Anzeige, wenn nicht im Bearbeitungsmodus -->
-          <mat-card-content [ngClass]="{'own-message-content': message.userId === currentUser.id}" *ngIf="editingMessageId !== message.id">
-            <p>{{ message.content }}</p>
-          </mat-card-content>
-        </mat-card>
+          </mat-card>
+
+        </ng-container>
       </ng-container>
 
 
@@ -85,8 +103,8 @@
     <mat-card-content>
       <form (ngSubmit)="addMessage()">
         <div class="message-input-container">
-          <textarea matInput [formControl]="messageFormControl" placeholder="Type a message"
-            class="message-textarea" rows="1" (keydown.enter)="sendMessage($event)">
+          <textarea matInput [formControl]="messageFormControl" placeholder="Type a message" class="message-textarea"
+            rows="1" (keydown.enter)="sendMessage($event)">
         </textarea>
 
           <!-- Icons and action buttons -->

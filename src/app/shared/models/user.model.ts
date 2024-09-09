@@ -4,7 +4,7 @@ export interface User {
    username: string;
    email: string;
    avatarUrl: string;
-   status: 'online' | 'offline' | 'busy';
+   status: 'online' | 'offline' | 'busy' | 'away';
    channels?: string[];
    directMessageIds?: string[];
 }

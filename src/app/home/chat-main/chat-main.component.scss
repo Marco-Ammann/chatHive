@@ -13,7 +13,7 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 45px;
   padding-top: 20px;
   padding-bottom: 25px;
   padding-right: 5px;
@@ -22,6 +22,25 @@
   background-color: #f2f6ff;
   margin-bottom: 20px;
   box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2);
+}
+
+.date-divider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #999;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+
+  .divider-line {
+    flex-grow: 1;
+    height: 1px;
+    background-color: #999;
+    margin: 0 10px;
+  }
 }
 
 // 0px 2px 1px -1px rgba(0, 0, 0, 0.2)
@@ -52,34 +71,90 @@ p {
   display: flex;
   justify-content: flex-end;
   background-color: #d7e3ff;
-  border-radius: 10px;
-  padding: 10px;
   align-self: flex-end;
+  border-top-right-radius: 0px !important;
+  margin-right: 20px;
+  padding-right: 30px!important;
+
+  mat-card-header {
+    position: relative;
+    right: -30px;
+  }
+
+
+  mat-card-content {
+    border-top-right-radius: 0px !important;
+    background-color: #faf9fd;
+  }
+
+  &:hover {
+    background-color: #c4d2f5;
+  }
+
+  .date {
+    right: 0;
+  }
+
+  .messageMenuBtn {
+    position: relative;
+    right: 38px;
+  }
 }
 
 /* Styles for messages from other users */
 .other-message {
+  border-top-left-radius: 0px !important;
   display: flex;
   justify-content: flex-start;
   background-color: #faf9fd;
-  border-radius: 10px;
-  padding: 10px;
   align-self: flex-start;
+  margin-left: 20px;
+  padding-left: 30px!important;
+
+  mat-card-header {
+    position: relative;
+    left: -30px;
+  }
+
+  mat-card-content {
+    border-top-left-radius: 0px !important;
+    background-color: #d7e3ff;
+  }
+
+  &:hover {
+    background-color: #f2f0f5;
+  }
+
+  .date {
+    left: 0;
+  }
+
+  .messageMenuBtn {
+    position: relative;
+    left: 38px;
+  }
 }
-
-
 
 /* General message layout */
 .message {
+  position: relative;
   max-width: 60%;
   width: auto;
   cursor: pointer;
+  padding-right: 4px;
+  padding-left: 4px;
+  padding-bottom: 4px;
+  transition: 0.2s ease-in-out;
+
+  &:hover .messageMenuBtn {
+    opacity: 1;
+  }
 
   mat-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0;
+    padding: 0 5px;
   }
 
   /* Layout for avatar, name, and menu button */
@@ -113,18 +188,14 @@ p {
     }
   }
 
-  .own-message-content {
-    background-color: #faf9fd;
-  }
-
   /* Message avatar and information */
   .messageAvaterAndInfo {
     display: flex;
     align-items: center;
 
     img {
-      width: 50px;
-      height: 50px;
+      width: 30px;
+      height: 30px;
       margin: 0px;
       margin-right: 10px;
     }
@@ -132,43 +203,37 @@ p {
 
   /* Menu button */
   .messageMenuBtn {
-    display: flex;
-    justify-content: flex-start;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
   }
 
   /* Message information: username and timestamp */
   .messageInfo {
     text-align: left;
 
-    mat-card-title{
+    mat-card-title {
       display: flex;
       flex-direction: column;
       span {
-        font-size: 15px;
+        font-size: 16px;
         font-weight: 500;
       }
-    }
-
-    .date {
-      font-size: 12px;
-      font-weight: 300;
-      color: #777;
     }
   }
 
   mat-card-content {
-    margin-top: 5px;
     padding: 10px;
     font-size: 14px;
-    background-color: #d7e3ff;
     border-radius: 10px;
-
   }
 
-  &:hover {
-    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+  .date {
+    font-size: 12px;
+    font-weight: 400;
+    color: #999;
+    position: absolute;
+    top: -20px;
   }
-
 }
 
 /* ---- Edit message container ---- */

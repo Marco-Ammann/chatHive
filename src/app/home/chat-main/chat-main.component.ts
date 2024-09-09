@@ -184,4 +184,16 @@ export class ChatMainComponent implements OnInit {
       console.error('Scrolling Error:', err);
     }
   }
+
+  isMessageDivider(index: number, messages: Message[]): boolean {
+    if (index === 0) {
+      return true;
+    }
+    const currentMessage = messages[index];
+    const previousMessage = messages[index - 1];
+    return (
+      currentMessage.createdAt.toDate().getDate() !==
+      previousMessage.createdAt.toDate().getDate()
+    );
+  }
 }
